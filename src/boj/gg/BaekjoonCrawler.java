@@ -1,4 +1,4 @@
-package baekjoonCrawler;
+package boj.gg;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 
 public class BaekjoonCrawler {
 	
-	final static String MAINURL = "http://www.acmicpc.net/";
+	static final String MAINURL = "http://www.acmicpc.net/";
 	
 	public ArrayList<String> crawlProblemNumbers() {
 		Document doc = null;
@@ -18,10 +18,10 @@ public class BaekjoonCrawler {
 		try {
 		 doc = Jsoup.connect(MAINURL).get();
 		} catch(IOException e) {
-			System.out.println("Unable to connect.");
+			System.err.println("Unable to connect.");
 		}
 		String title = doc.title();
-		System.out.println("Successfully connected to " + title);
+		System.err.println("Successfully connected to " + title);
 		
 		for(int pageNumber = 1;; pageNumber++) {
 			String problemPageURL = MAINURL + "/problemset/" + String.valueOf(pageNumber);
@@ -33,19 +33,20 @@ public class BaekjoonCrawler {
 			String targetCSS = "td.list_problem_id";
 			Elements currentProblemIDList = doc.select(targetCSS);
 			
-			System.out.println("Page number " + pageNumber);
+			System.err.println("Page number " + pageNumber);
 			if(currentProblemIDList.isEmpty()) {
-				System.out.println("Problem Number Crawling Finished.");
+				System.err.println("Problem Number Crawling Finished.");
 				break;
 			}
 			for(Element problemID : currentProblemIDList) {
-				System.out.println(problemID.text());
+				System.err.println(problemID.text());
 			}
 		}
 		return problemIDList;
 	}
 	
 	public static void main(String[] args) {			
+		// TO-DO part
 	}
 
 }
