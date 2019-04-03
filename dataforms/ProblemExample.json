@@ -1,0 +1,15 @@
+{
+	"problem": [
+		{
+			"problemNumber" : "1000",
+			"solvedPeopleNumber" : 60665,
+			"submittedNumber" : 185375,
+			"percentCorrect" : 45.562,
+			"updateDate" : "2019-04-03",
+			"algorithms" : [
+				"수학",
+				"사칙연산"
+			]
+		}
+	]
+}

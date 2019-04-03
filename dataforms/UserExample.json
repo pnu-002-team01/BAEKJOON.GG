@@ -1,0 +1,17 @@
+{
+	"user": [
+		{
+			"rating" : 1600,
+			"id" : "Rche",
+			"password" : "******",
+			"solvedProblemNumber" : 511,
+			"submissionNumber" : 1172,
+			"solvedProblemList" : [
+				"1000",
+				"1001",
+				...
+				"15820"
+			]
+		}
+	]
+}
