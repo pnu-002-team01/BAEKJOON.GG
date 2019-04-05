@@ -2,7 +2,10 @@ package boj.gg;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,8 +15,51 @@ public class BaekjoonCrawler {
 	
 	static final String MAINURL = "http://www.acmicpc.net/";
 	
-	public ArrayList<String> crawlProblemNumbers() {
+	public static ArrayList<String> crawlProblemNumbers() {
 		Document doc = null;
+		
+		
+		String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36";
+
+		// 전송할 폼 데이터
+		Map<String, String> data = new HashMap<>();
+		data.put("login_user_id", "아이디");
+		data.put("login_password", "비밀번호");
+		data.put("auto_login", "0");
+
+		// 로그인(POST)
+		Connection.Response response = null;
+		try {
+		response = Jsoup.connect("https://www.acmicpc.net/signin")
+		                                    .userAgent(userAgent)
+		                                    .timeout(3000)
+		                                    .data(data)
+		                                    .method(Connection.Method.POST)
+		                                    .execute();
+		} catch (IOException e) {
+			System.err.println("Fail to have cookie");
+		}
+		
+		// 로그인 성공 후 얻은 쿠키.
+		// 쿠키 중 TSESSION 이라는 값을 확인할 수 있다.
+		Map<String, String> loginCookie = response.cookies();
+		Document adminPageDocument = null;
+		try {
+		adminPageDocument = Jsoup.connect("https://www.acmicpc.net/problem/1000")
+                .userAgent(userAgent)
+                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
+                .header("Upgrade-Insecure-Requests", "1")	
+                .cookies(loginCookie) // 위에서 얻은 '로그인 된' 쿠키
+                .get();
+		} catch(IOException e) {
+			System.err.println("fail to crawProblem page");
+		}
+		
+		
+		System.err.println(adminPageDocument);
+
+		
+
 		ArrayList<String> problemIDList = new ArrayList<>();
 		try {
 		 doc = Jsoup.connect(MAINURL).get();
@@ -46,7 +92,8 @@ public class BaekjoonCrawler {
 	}
 	
 	public static void main(String[] args) {			
-		// TO-DO part
+		ArrayList myProblemList = new ArrayList();
+		myProblemList = crawlProblemNumbers();
 	}
 
 }
