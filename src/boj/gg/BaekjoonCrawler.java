@@ -21,7 +21,6 @@ public class BaekjoonCrawler {
 	private Map<String,String> loginCookie = null;
 	
 	// Constructor
-	
 	public BaekjoonCrawler(String userID, String userPassword) {
 		checkInternetConnection();
 		acquireLoginCookie(userID,userPassword);
@@ -69,7 +68,6 @@ public class BaekjoonCrawler {
 		// 로그인 성공 후 얻은 쿠키를 멤버 변수로 저장.
 		// 쿠키 중 TSESSION 이라는 값을 확인할 수 있다.
 		loginCookie = response.cookies();
-		
 	}
 	
 	public void receiveProblemDocument(int problemID) {
@@ -79,7 +77,8 @@ public class BaekjoonCrawler {
 		}
 		else {
 			try {
-				document = Jsoup.connect("https://www.acmicpc.net/problem/1000")
+				final String problemURL = "https://www.acmicpc.net/problem/" + problemID;
+				document = Jsoup.connect(problemURL)
 				                .userAgent(userAgent)
 				                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 				                .header("Upgrade-Insecure-Requests", "1")	
@@ -137,6 +136,82 @@ public class BaekjoonCrawler {
 		return problemState;
 	}
 	
+	public ArrayList<String> crawlSolvedProblem(String userID){
+		String UserPageURL = MAINURL + "/user/" +  userID;
+		Document doc = null;
+		ArrayList < String > res = new ArrayList< String >();
+		
+		if(loginCookie == null) {
+			System.err.println("Login cookie is not acquired.");
+		}
+		
+		try {
+			doc = Jsoup.connect(UserPageURL)
+	                .userAgent(userAgent)
+	                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
+	                .header("Upgrade-Insecure-Requests", "1")	
+	                .cookies(loginCookie) // acquireLoginCookie에서 얻은 '로그인 된' 쿠키
+	                .get();
+			
+			final String TARGET_CLASS = "panel-body";
+			final String SPLIT_CLASS = "span.problem_number";
+			
+			
+			Elements myProblemList = doc.getElementsByClass(TARGET_CLASS);
+			Elements solvedProblem = myProblemList.get(0).select(SPLIT_CLASS);
+			
+			
+			
+			for( int i = 0; i < solvedProblem.size(); ++i ) {
+				res.add(solvedProblem.get(i).text());
+			}  
+
+			
+			
+		} catch(IOException e) {
+			System.err.println("Fail to get User Information");
+		}
+		return res;
+	}
+
+	public ArrayList<String> crawlUnsolvedProblem(String userID){
+		String UserPageURL = MAINURL + "/user/" +  userID;
+		Document doc = null;
+		ArrayList < String > res = new ArrayList< String >();
+		
+		if(loginCookie == null) {
+			System.err.println("Login cookie is not acquired.");
+		}
+		
+		try {
+			doc = Jsoup.connect(UserPageURL)
+	                .userAgent(userAgent)
+	                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
+	                .header("Upgrade-Insecure-Requests", "1")	
+	                .cookies(loginCookie) // acquireLoginCookie에서 얻은 '로그인 된' 쿠키
+	                .get();
+			
+			final String TARGET_CLASS = "panel-body";
+			final String SPLIT_CLASS = "span.problem_number";
+			
+			
+			Elements myProblemList = doc.getElementsByClass(TARGET_CLASS);
+			Elements unsolvedProblem = myProblemList.get(1).select(SPLIT_CLASS);
+			
+			
+			
+			for( int i = 0; i < unsolvedProblem.size(); ++i ) {
+				res.add(unsolvedProblem.get(i).text());
+			}  
+
+			
+			
+		} catch(IOException e) {
+			System.err.println("Fail to get User Information");
+		}
+		return res;
+	}
+	
 	public static ArrayList<String> crawlProblemNumbers() {
 		Document doc = null;		
 
@@ -169,10 +244,17 @@ public class BaekjoonCrawler {
 	}
 	
 	public static void main(String[] args) {			
-		BaekjoonCrawler bojcrawl = new BaekjoonCrawler("아이디","비밀번호");
-		bojcrawl.receiveProblemDocument(1000);
+		String userID = "아이디";
+		String userPW = "비밀번호";
+		
+		BaekjoonCrawler bojcrawl = new BaekjoonCrawler(userID,userPW);
+		bojcrawl.receiveProblemDocument(1001);
 		Map <String,String> problemState = bojcrawl.crawlProblemSubmitState();
 		ArrayList<String> problemAlgorithms = bojcrawl.crawlAlgorithms();
+		ArrayList<String> temp = bojcrawl.crawlSolvedProblem(userID);
+		//System.err.println(temp);
+		temp = bojcrawl.crawlUnsolvedProblem(userID);
+		//System.err.println(temp);
 	}
 
 }
