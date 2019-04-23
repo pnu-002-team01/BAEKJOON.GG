@@ -1,6 +1,10 @@
-package boj.gg;
+package datateam;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +18,9 @@ import org.jsoup.select.Elements;
 public class BaekjoonCrawler {
 	
 	private static final String MAINURL = "http://www.acmicpc.net/";
-	private static final boolean SHOW_LOG = true;
+	private static final boolean SHOW_LOG = false;
 	private static final String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36";
+	private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	public Document problemPageDocument = null;
 	private Map<String,String> loginCookie = null;
@@ -70,7 +75,7 @@ public class BaekjoonCrawler {
 		loginCookie = response.cookies();
 	}
 	
-	public void receiveProblemDocument(int problemID) {
+	public void receiveProblemDocument(String problemID) {
 		Document document = null;
 		if(loginCookie == null) {
 			System.err.println("Login cookie is not acquired.");
@@ -243,18 +248,64 @@ public class BaekjoonCrawler {
 		return problemIDList;
 	}
 	
+	public void writeProblemJson(String problemID) {
+		
+		ArrayList<String> json_categories = new ArrayList<String>();
+		json_categories.add("percentCorrect");
+		json_categories.add("memoryLimit");
+		json_categories.add("correctNumber");
+		json_categories.add("submittedNumber");
+		json_categories.add("solvedPeopleNumber");
+		json_categories.add("timeLimit");
+		
+		this.receiveProblemDocument(problemID);
+		String jsonResult = "{\n\t\"problemNumber\" : \""+problemID+"\",\n";
+		
+		int i=0;
+		Map <String,String> problemState = this.crawlProblemSubmitState();
+		for(String category : problemState.keySet()) {
+			String categoryContent = "\t\"" + json_categories.get(i) + "\" :\"" + problemState.get(category) + "\",\n";
+			i+=1;
+			jsonResult += categoryContent;
+		}
+		
+		LocalDate localDate = LocalDate.now();
+		jsonResult += "\t\"updateDate\" : \""+DTF.format(localDate) + "\",\n";
+		
+		ArrayList<String> problemAlgorithms = this.crawlAlgorithms();
+		jsonResult += "\t\"algorithms\" : [\n";
+		int algorithmTagSize = problemAlgorithms.size();
+		for(i=0; i<algorithmTagSize; i++) {
+			jsonResult += "\t\t\""+ problemAlgorithms.get(i) + "\"";
+			if(i != algorithmTagSize-1) {
+				jsonResult += ",\n";
+			}
+		}
+		jsonResult += "\n\t]\n}";
+		
+		if(SHOW_LOG) {
+			System.out.print(jsonResult);
+		}
+		
+		//Write problem json as problemID.json
+		File file = new File("data/problems/"+problemID+".json");
+		
+		try {
+			FileWriter fw = new FileWriter(file);
+			fw.write(jsonResult);
+			fw.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public static void main(String[] args) {			
-		String userID = "아이디";
-		String userPW = "비밀번호";
+		String userID = "rche";
+		String userPW = "illak0227";
 		
 		BaekjoonCrawler bojcrawl = new BaekjoonCrawler(userID,userPW);
-		bojcrawl.receiveProblemDocument(1001);
-		Map <String,String> problemState = bojcrawl.crawlProblemSubmitState();
-		ArrayList<String> problemAlgorithms = bojcrawl.crawlAlgorithms();
-		ArrayList<String> temp = bojcrawl.crawlSolvedProblem(userID);
-		//System.err.println(temp);
-		temp = bojcrawl.crawlUnsolvedProblem(userID);
-		//System.err.println(temp);
+		bojcrawl.writeProblemJson("1001");
 	}
 
 }

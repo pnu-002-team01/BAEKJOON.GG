@@ -1,0 +1,14 @@
+{
+	"problemNumber" : "1001",
+	"percentCorrect" :"72.172%",
+	"memoryLimit" :"128 MB",
+	"correctNumber" :"58524",
+	"submittedNumber" :"83493",
+	"solvedPeopleNumber" :"51621",
+	"timeLimit" :"2 초",
+	"updateDate" : "2019-04-24",
+	"algorithms" : [
+		"사칙연산",
+		"수학"
+	]
+}
