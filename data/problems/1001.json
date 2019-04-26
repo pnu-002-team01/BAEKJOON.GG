@@ -1,12 +1,12 @@
 {
 	"problemNumber" : "1001",
-	"percentCorrect" :"72.172%",
+	"percentCorrect" :"72.161%",
 	"memoryLimit" :"128 MB",
-	"correctNumber" :"58524",
-	"submittedNumber" :"83493",
-	"solvedPeopleNumber" :"51621",
+	"correctNumber" :"58662",
+	"submittedNumber" :"83703",
+	"solvedPeopleNumber" :"51739",
 	"timeLimit" :"2 초",
-	"updateDate" : "2019-04-24",
+	"updateDate" : "2019-04-26",
 	"algorithms" : [
 		"사칙연산",
 		"수학"
