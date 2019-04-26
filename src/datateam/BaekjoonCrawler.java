@@ -248,6 +248,56 @@ public class BaekjoonCrawler {
 		return problemIDList;
 	}
 	
+	public void writeUserInfoJson( String userID) {
+		String jsonResult = "{\n\t\"userID\" : \""+userID+"\",\n";
+		ArrayList<String> solvedProblems = this.crawlSolvedProblem(userID);
+		
+		jsonResult += "\t\"countSolvedProblems\" : \""+ solvedProblems.size() + "\",\n";
+		jsonResult += "\t\"solvedProblems\" : [\n";
+		int problemTagSize = solvedProblems.size();
+		for(int i=0; i<problemTagSize; i++) {
+			jsonResult += "\t\t\""+ solvedProblems.get(i) + "\"";
+			if(i != problemTagSize-1) {
+				jsonResult += ",\n";
+			}
+		}
+		jsonResult += "\n\t],\n";
+		
+		ArrayList<String> unsolvedProblems = this.crawlUnsolvedProblem(userID);
+
+		jsonResult += "\t\"countUnsolvedProblems\" : \""+ unsolvedProblems.size() + "\",\n";
+		jsonResult += "\t\"unsolvedProblems\" : [\n";
+		problemTagSize = unsolvedProblems.size();
+		for(int i=0; i<problemTagSize; i++) {
+			jsonResult += "\t\t\""+ unsolvedProblems.get(i) + "\"";
+			if(i != problemTagSize-1) {
+				jsonResult += ",\n";
+			}
+		}
+		jsonResult += "\n\t],\n";
+		
+		
+		LocalDate localDate = LocalDate.now();
+		jsonResult += "\t\"updateDate\" : \""+DTF.format(localDate) + "\"";
+		jsonResult += "\n}";
+		
+		if(SHOW_LOG) {
+			System.out.print(jsonResult);
+		}
+		
+		//Write problem json as problemID.json
+		File file = new File("data/users/"+userID+".json");
+		
+		try {
+			FileWriter fw = new FileWriter(file);
+			fw.write(jsonResult);
+			fw.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public void writeProblemJson(String problemID) {
 		
 		ArrayList<String> json_categories = new ArrayList<String>();
@@ -301,11 +351,12 @@ public class BaekjoonCrawler {
 	}
 	
 	public static void main(String[] args) {			
-		String userID = "rche";
-		String userPW = "illak0227";
+		String userID = "userID";
+		String userPW = "userPW";
 		
 		BaekjoonCrawler bojcrawl = new BaekjoonCrawler(userID,userPW);
 		bojcrawl.writeProblemJson("1001");
+		bojcrawl.writeUserInfoJson("userID");
 	}
 
 }
