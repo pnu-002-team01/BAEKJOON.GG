@@ -18,7 +18,7 @@ import org.jsoup.select.Elements;
 public class BaekjoonCrawler {
 	
 	private static final String MAINURL = "http://www.acmicpc.net/";
-	private static final boolean SHOW_LOG = false;
+	private static final boolean SHOW_LOG = true;
 	private static final String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36";
 	private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
@@ -72,7 +72,7 @@ public class BaekjoonCrawler {
 		
 		// 로그인 성공 후 얻은 쿠키를 멤버 변수로 저장.
 		// 쿠키 중 TSESSION 이라는 값을 확인할 수 있다.
-		loginCookie = response.cookies();
+		this.loginCookie = response.cookies();
 	}
 	
 	public void receiveProblemDocument(String problemID) {
@@ -93,7 +93,7 @@ public class BaekjoonCrawler {
 				System.err.println("Failed to crawl problem page");
 			}
 		}
-		problemPageDocument = document;
+		this.problemPageDocument = document;
 	}
 	
 	public ArrayList<String> crawlAlgorithms() {
@@ -240,6 +240,7 @@ public class BaekjoonCrawler {
 				break;
 			}
 			for(Element problemID : currentProblemIDList) {
+				problemIDList.add(problemID.text());
 				if(SHOW_LOG) {
 					System.err.println(problemID.text());
 				}
@@ -305,7 +306,11 @@ public class BaekjoonCrawler {
 		String userPW = "illak0227";
 		
 		BaekjoonCrawler bojcrawl = new BaekjoonCrawler(userID,userPW);
-		bojcrawl.writeProblemJson("1001");
+		ArrayList<String> probList = BaekjoonCrawler.crawlProblemNumbers();
+		for(String problemNumber : probList) {
+			System.out.println(problemNumber);
+			bojcrawl.writeProblemJson(problemNumber);
+		}
 	}
 
 }
