@@ -4,7 +4,9 @@
   $txt = $_POST[content];
   fwrite($myfile, $txt);
   fclose($myfile);
-  $output;
-  exec("$HOME/pmd-bin-6.13.0/bin/run.sh pmd -d ./javasource/".$filename.".java -f text -R rulesets/java/quickstart.xml > ./javaresult/".$filename.".txt", $output, $error);
+  $output = shell_exec("./pmd-bin-6.13.0/bin/run.sh pmd -d ./javasource/".$filename.".java -f text -R rulesets/java/quickstart.xml");
   echo "<pre>$output</pre>";
+	$write = fopen("./javaresult/".$filename.".txt","w");
+	fwrite($write, $output);
+	fclose($write);
 ?>

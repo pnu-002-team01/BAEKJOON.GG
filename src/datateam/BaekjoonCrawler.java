@@ -18,7 +18,7 @@ import org.jsoup.select.Elements;
 public class BaekjoonCrawler {
 	
 	private static final String MAINURL = "http://www.acmicpc.net/";
-	private static final boolean SHOW_LOG = false;
+	private static final boolean SHOW_LOG = true;
 	private static final String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36";
 	private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
@@ -51,13 +51,11 @@ public class BaekjoonCrawler {
 	
 	public void acquireLoginCookie(String userID, String userPassword) {
 
-		// ì „ì†¡í•  í¼ ë°ì´í„°
 		Map<String, String> data = new HashMap<>();
 		data.put("login_user_id", userID);
 		data.put("login_password", userPassword);
 		data.put("auto_login", "0");
 		
-		// ë¡œê·¸ì¸(POST)
 		Connection.Response response = null;
 		try {
 		response = Jsoup.connect("https://www.acmicpc.net/signin")
@@ -70,9 +68,9 @@ public class BaekjoonCrawler {
 			System.err.println("Failed to connect login server.");
 		}
 		
-		// ë¡œê·¸ì¸ ì„±ê³µ í›„ ì–»ì€ ì¿ í‚¤ë¥¼ ë©¤ë²„ ë³€ìˆ˜ë¡œ ì €ì¥.
-		// ì¿ í‚¤ ì¤‘ TSESSION ì´ë¼ëŠ” ê°’ì„ í™•ì¸í•  ìˆ˜ ìˆë‹¤.
-		loginCookie = response.cookies();
+		// ·Î±×ÀÎ ¼º°ø ÈÄ ¾òÀº ÄíÅ°¸¦ ¸â¹ö º¯¼ö·Î ÀúÀå.
+		// ÄíÅ° Áß TSESSION ÀÌ¶ó´Â °ªÀ» È®ÀÎÇÒ ¼ö ÀÖ´Ù.
+		this.loginCookie = response.cookies();
 	}
 	
 	public void receiveProblemDocument(String problemID) {
@@ -87,13 +85,13 @@ public class BaekjoonCrawler {
 				                .userAgent(userAgent)
 				                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 				                .header("Upgrade-Insecure-Requests", "1")	
-				                .cookies(loginCookie) // acquireLoginCookieì—ì„œ ì–»ì€ 'ë¡œê·¸ì¸ ëœ' ì¿ í‚¤
+				                .cookies(loginCookie) // acquireLoginCookieï¿½ë?ï¿½ê? ï¿½ë¼¸ï¿½ï¿½ 'æ¿¡ì’“?‡ï¿½ì”?ï¿½ë?' ?‘ì¢ê¶
 				                .get();
 			} catch(IOException e) {
 				System.err.println("Failed to crawl problem page");
 			}
 		}
-		problemPageDocument = document;
+		this.problemPageDocument = document;
 	}
 	
 	public ArrayList<String> crawlAlgorithms() {
@@ -155,7 +153,7 @@ public class BaekjoonCrawler {
 	                .userAgent(userAgent)
 	                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 	                .header("Upgrade-Insecure-Requests", "1")	
-	                .cookies(loginCookie) // acquireLoginCookieì—ì„œ ì–»ì€ 'ë¡œê·¸ì¸ ëœ' ì¿ í‚¤
+	                .cookies(loginCookie) // acquireLoginCookieï¿½ë?ï¿½ê? ï¿½ë¼¸ï¿½ï¿½ 'æ¿¡ì’“?‡ï¿½ì”?ï¿½ë?' ?‘ì¢ê¶
 	                .get();
 			
 			final String TARGET_CLASS = "panel-body";
@@ -193,7 +191,7 @@ public class BaekjoonCrawler {
 	                .userAgent(userAgent)
 	                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 	                .header("Upgrade-Insecure-Requests", "1")	
-	                .cookies(loginCookie) // acquireLoginCookieì—ì„œ ì–»ì€ 'ë¡œê·¸ì¸ ëœ' ì¿ í‚¤
+	                .cookies(loginCookie) // acquireLoginCookieï¿½ë?ï¿½ê? ï¿½ë¼¸ï¿½ï¿½ 'æ¿¡ì’“?‡ï¿½ì”?ï¿½ë?' ?‘ì¢ê¶
 	                .get();
 			
 			final String TARGET_CLASS = "panel-body";
@@ -240,12 +238,68 @@ public class BaekjoonCrawler {
 				break;
 			}
 			for(Element problemID : currentProblemIDList) {
+				problemIDList.add(problemID.text());
 				if(SHOW_LOG) {
 					System.err.println(problemID.text());
 				}
 			}
 		}
 		return problemIDList;
+	}
+	
+	public void writeUserInfoJson( String userID) {
+		
+		if(loginCookie == null) {
+			System.err.println("Login cookie is not acquired.");
+		}
+		
+		String jsonResult = "{\n\t\"userID\" : \""+userID+"\",\n";
+		ArrayList<String> solvedProblems = this.crawlSolvedProblem(userID);
+		
+		jsonResult += "\t\"countSolvedProblems\" : \""+ solvedProblems.size() + "\",\n";
+		jsonResult += "\t\"solvedProblems\" : [\n";
+		int problemTagSize = solvedProblems.size();
+		for(int i=0; i<problemTagSize; i++) {
+			jsonResult += "\t\t\""+ solvedProblems.get(i) + "\"";
+			if(i != problemTagSize-1) {
+				jsonResult += ",\n";
+			}
+		}
+		jsonResult += "\n\t],\n";
+		
+		ArrayList<String> unsolvedProblems = this.crawlUnsolvedProblem(userID);
+
+		jsonResult += "\t\"countUnsolvedProblems\" : \""+ unsolvedProblems.size() + "\",\n";
+		jsonResult += "\t\"unsolvedProblems\" : [\n";
+		problemTagSize = unsolvedProblems.size();
+		for(int i=0; i<problemTagSize; i++) {
+			jsonResult += "\t\t\""+ unsolvedProblems.get(i) + "\"";
+			if(i != problemTagSize-1) {
+				jsonResult += ",\n";
+			}
+		}
+		jsonResult += "\n\t],\n";
+		
+		
+		LocalDate localDate = LocalDate.now();
+		jsonResult += "\t\"updateDate\" : \""+DTF.format(localDate) + "\"";
+		jsonResult += "\n}";
+		
+		if(SHOW_LOG) {
+			System.out.print(jsonResult);
+		}
+		
+		//Write problem json as problemID.json
+		File file = new File("data/users/"+userID+".json");
+		
+		try {
+			FileWriter fw = new FileWriter(file);
+			fw.write(jsonResult);
+			fw.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void writeProblemJson(String problemID) {
@@ -301,11 +355,12 @@ public class BaekjoonCrawler {
 	}
 	
 	public static void main(String[] args) {			
-		String userID = "id";
-		String userPW = "password";
+		String userID = "userID";
+		String userPW = "userPW";
 		
 		BaekjoonCrawler bojcrawl = new BaekjoonCrawler(userID,userPW);
 		bojcrawl.writeProblemJson("1001");
+		bojcrawl.writeUserInfoJson("userID");
 	}
 
 }
