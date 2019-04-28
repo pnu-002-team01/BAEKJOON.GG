@@ -51,13 +51,11 @@ public class BaekjoonCrawler {
 	
 	public void acquireLoginCookie(String userID, String userPassword) {
 
-		// Àü¼ÛÇÒ Æû µ¥ÀÌÅÍ
 		Map<String, String> data = new HashMap<>();
 		data.put("login_user_id", userID);
 		data.put("login_password", userPassword);
 		data.put("auto_login", "0");
 		
-		// ·Î±×ÀÎ(POST)
 		Connection.Response response = null;
 		try {
 		response = Jsoup.connect("https://www.acmicpc.net/signin")
@@ -87,7 +85,7 @@ public class BaekjoonCrawler {
 				                .userAgent(userAgent)
 				                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 				                .header("Upgrade-Insecure-Requests", "1")	
-				                .cookies(loginCookie) // acquireLoginCookie¿¡¼­ ¾òÀº '·Î±×ÀÎ µÈ' ÄíÅ°
+				                .cookies(loginCookie) // acquireLoginCookieï¿½ë?ï¿½ê? ï¿½ë¼¸ï¿½ï¿½ 'æ¿¡ì’“?‡ï¿½ì”?ï¿½ë?' ?‘ì¢ê¶
 				                .get();
 			} catch(IOException e) {
 				System.err.println("Failed to crawl problem page");
@@ -155,7 +153,7 @@ public class BaekjoonCrawler {
 	                .userAgent(userAgent)
 	                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 	                .header("Upgrade-Insecure-Requests", "1")	
-	                .cookies(loginCookie) // acquireLoginCookie¿¡¼­ ¾òÀº '·Î±×ÀÎ µÈ' ÄíÅ°
+	                .cookies(loginCookie) // acquireLoginCookieï¿½ë?ï¿½ê? ï¿½ë¼¸ï¿½ï¿½ 'æ¿¡ì’“?‡ï¿½ì”?ï¿½ë?' ?‘ì¢ê¶
 	                .get();
 			
 			final String TARGET_CLASS = "panel-body";
@@ -193,7 +191,7 @@ public class BaekjoonCrawler {
 	                .userAgent(userAgent)
 	                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 	                .header("Upgrade-Insecure-Requests", "1")	
-	                .cookies(loginCookie) // acquireLoginCookie¿¡¼­ ¾òÀº '·Î±×ÀÎ µÈ' ÄíÅ°
+	                .cookies(loginCookie) // acquireLoginCookieï¿½ë?ï¿½ê? ï¿½ë¼¸ï¿½ï¿½ 'æ¿¡ì’“?‡ï¿½ì”?ï¿½ë?' ?‘ì¢ê¶
 	                .get();
 			
 			final String TARGET_CLASS = "panel-body";
@@ -249,6 +247,61 @@ public class BaekjoonCrawler {
 		return problemIDList;
 	}
 	
+	public void writeUserInfoJson( String userID) {
+		
+		if(loginCookie == null) {
+			System.err.println("Login cookie is not acquired.");
+		}
+		
+		String jsonResult = "{\n\t\"userID\" : \""+userID+"\",\n";
+		ArrayList<String> solvedProblems = this.crawlSolvedProblem(userID);
+		
+		jsonResult += "\t\"countSolvedProblems\" : \""+ solvedProblems.size() + "\",\n";
+		jsonResult += "\t\"solvedProblems\" : [\n";
+		int problemTagSize = solvedProblems.size();
+		for(int i=0; i<problemTagSize; i++) {
+			jsonResult += "\t\t\""+ solvedProblems.get(i) + "\"";
+			if(i != problemTagSize-1) {
+				jsonResult += ",\n";
+			}
+		}
+		jsonResult += "\n\t],\n";
+		
+		ArrayList<String> unsolvedProblems = this.crawlUnsolvedProblem(userID);
+
+		jsonResult += "\t\"countUnsolvedProblems\" : \""+ unsolvedProblems.size() + "\",\n";
+		jsonResult += "\t\"unsolvedProblems\" : [\n";
+		problemTagSize = unsolvedProblems.size();
+		for(int i=0; i<problemTagSize; i++) {
+			jsonResult += "\t\t\""+ unsolvedProblems.get(i) + "\"";
+			if(i != problemTagSize-1) {
+				jsonResult += ",\n";
+			}
+		}
+		jsonResult += "\n\t],\n";
+		
+		
+		LocalDate localDate = LocalDate.now();
+		jsonResult += "\t\"updateDate\" : \""+DTF.format(localDate) + "\"";
+		jsonResult += "\n}";
+		
+		if(SHOW_LOG) {
+			System.out.print(jsonResult);
+		}
+		
+		//Write problem json as problemID.json
+		File file = new File("data/users/"+userID+".json");
+		
+		try {
+			FileWriter fw = new FileWriter(file);
+			fw.write(jsonResult);
+			fw.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public void writeProblemJson(String problemID) {
 		
 		ArrayList<String> json_categories = new ArrayList<String>();
@@ -302,15 +355,12 @@ public class BaekjoonCrawler {
 	}
 	
 	public static void main(String[] args) {			
-		String userID = "rche";
-		String userPW = "illak0227";
+		String userID = "userID";
+		String userPW = "userPW";
 		
 		BaekjoonCrawler bojcrawl = new BaekjoonCrawler(userID,userPW);
-		ArrayList<String> probList = BaekjoonCrawler.crawlProblemNumbers();
-		for(String problemNumber : probList) {
-			System.out.println(problemNumber);
-			bojcrawl.writeProblemJson(problemNumber);
-		}
+		bojcrawl.writeProblemJson("1001");
+		bojcrawl.writeUserInfoJson("userID");
 	}
 
 }

@@ -1,15 +1,14 @@
 {
-	"problem": [
-		{
-			"problemNumber" : "1000",
-			"solvedPeopleNumber" : 60665,
-			"submittedNumber" : 185375,
-			"percentCorrect" : 45.562,
-			"updateDate" : "2019-04-03",
-			"algorithms" : [
-				"수학",
-				"사칙연산"
-			]
-		}
+	"problemNumber" : "1001",
+	"percentCorrect" :"72.172%",
+	"memoryLimit" :"128 MB",
+	"correctNumber" :"58524",
+	"submittedNumber" :"83493",
+	"solvedPeopleNumber" :"51621",
+	"timeLimit" :"2 초",
+	"updateDate" : "2019-04-24",
+	"algorithms" : [
+		"사칙연산",
+		"수학"
 	]
 }
