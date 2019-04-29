@@ -3,13 +3,16 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="BAEKJOON.GG">
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="BAEKJOON.GG"
+                 xmlns:jacoco="antlib:org.jacoco.ant">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
     <path id="BAEKJOON.GG.classpath">
         <pathelement location="bin"/>
+        <fileset dir="${ant.home}/lib" includes="*.jar"/>
+        <fileset dir="${ant.home}/lib/junit" includes="*.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -33,4 +36,34 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="BOJGGTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+            <classpath path="../jacocoant.jar"/>
+        </taskdef>
+        <jacoco:coverage>
+            <junit fork="yes" printsummary="withOutAndErr">
+                <formatter type="xml"/>
+                <test name="team_test_01.CalculatorTest" todir="$(junit.output.dir)"/>
+                <jvmarg line="-ea"/>
+                <classpath refid="BAEKJOON.GG.classpath"/>
+            </junit>
+        </jacoco:coverage>
+        <jacoco:report>
+            <executiondata>
+                <file file="jacoco.exec"/>
+            </executiondata>
+          
+            <structure name="java coverage">
+                <classfiles>
+                    <fileset dir="bin"/>
+                </classfiles>
+                <sourcefiles encoding="UTF-8">
+                    <fileset dir="src"/>
+                </sourcefiles>
+            </structure>
+            <html destdir="${junit.output.dir}/coverage-report"/>
+          </jacoco:report>
+      </target>
+      <target name="junitreport">
 </project>
