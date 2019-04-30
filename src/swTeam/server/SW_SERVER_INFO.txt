@@ -1,2 +1,3 @@
+/* Server Info */
 Public IP : 3.16.83.76
 Public DNS : ec2-3-16-83-76.us-east-2.compute.amazonaws.com
