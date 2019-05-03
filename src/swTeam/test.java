@@ -1,9 +1,55 @@
 package swTeam;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class test {
 	
+	static String code0 = "import java.io.BufferedReader;\r\n" + 
+			"import java.io.InputStreamReader;\r\n" + 
+			"import java.util.*;\r\n" + 
+			"\r\n" + 
+			"public class no01002 {\r\n" + 
+			"\r\n" + 
+			"	public static void main(String[] args) throws Exception {\r\n" + 
+			"		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));\r\n" + 
+			"		\r\n" + 
+			"		int test = Integer.parseInt(read.readLine());\r\n" + 
+			"		for ( int t = 1; t <= test; t++ ) {\r\n" + 
+			"			String[] data = read.readLine().split(\" \");\r\n" + 
+			"			\r\n" + 
+			"			int x1 = Integer.parseInt(data[0]);\r\n" + 
+			"			int y1 = Integer.parseInt(data[1]);\r\n" + 
+			"			int r1 = Integer.parseInt(data[2]);\r\n" + 
+			"			int x2 = Integer.parseInt(data[3]);\r\n" + 
+			"			int y2 = Integer.parseInt(data[4]);\r\n" + 
+			"			int r2 = Integer.parseInt(data[5]);\r\n" + 
+			"			\r\n" + 
+			"			double dis = Math.sqrt(Math.pow(x1-x2, 2)+Math.pow(y1-y2, 2));\r\n" + 
+			"			\r\n" + 
+			"			if ( x1 == x2 && y1 == y2 ) {\r\n" + 
+			"				if ( r1 == r2 )\r\n" + 
+			"					System.out.println(-1);\r\n" + 
+			"				else\r\n" + 
+			"					System.out.println(0);\r\n" + 
+			"			}\r\n" + 
+			"			else if ( dis == r1+r3 )\r\n" + 
+			"				System.out.println(1);\r\n" + 
+			"			else if ( dis > r1+r2 )\r\n" + 
+			"				System.out.println(1000);\r\n" + 
+			"			else {\r\n" + 
+			"				if ( dis == Math.abs(r1-r2) )\r\n" + 
+			"					System.out.println(1);\r\n" + 
+			"				else if ( dis < Math.abs(r1-r2) )\r\n" + 
+			"					System.out.println(0);\r\n" + 
+			"				else\r\n" + 
+			"					System.out.println(2);\r\n" + 
+			"			}\r\n" + 
+			"		}\r\n" + 
+			"	}\r\n" + 
+			"\r\n" + 
+			"}\r\n" + 
+			"";
 	static String code1 = "import java.io.BufferedReader;\r\n" + 
 			"import java.io.InputStreamReader;\r\n" + 
 			"\r\n" + 
@@ -119,11 +165,15 @@ public class test {
 	static int PNumber = 1002;
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		SourceAnalysis sa = new SourceAnalysis(0);						// SourceAnalysis(int type) : if type == 0 : cpp, type == 1 : java
-		ArrayList<String> result = sa.Analysis(UserId, PNumber, code2);	// Userid, ProblemNumber, SourceCode 를 입력 받음.
-		for ( int i = 0; i < result.size()-1; i++ )						// 아이디와 문제번호로 소스파일 및 분석결과 저장. ex) userid_number.java
-			System.out.println(result.get(i));							// ArrayList<String> 으로 반환됨.
+//		 TODO Auto-generated method stub
+//		SourceAnalysis sa = new SourceAnalysis(0);						// SourceAnalysis(int type) : if type == 0 : cpp, type == 1 : java
+//		ArrayList<String> result = sa.Analysis(UserId, PNumber, code2);	// Userid, ProblemNumber, SourceCode 를 입력 받음.
+//		for ( int i = 0; i < result.size()-1; i++ )						// 아이디와 문제번호로 소스파일 및 분석결과 저장. ex) userid_number.java
+//			System.out.println(result.get(i));							// ArrayList<String> 으로 반환됨.
+		
+		CodeCompare cp = new CodeCompare(code0, code1);
+		ArrayList<Integer> result = cp.getDiff(0);						// getDiff(int index) >> index = 0 : 이전 파일에서 삭제된 인덱스, index = 1 : 현재파일에서 추가된 인덱스
+		System.out.println(result);
 	}
 
 }
