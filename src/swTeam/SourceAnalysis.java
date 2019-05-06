@@ -61,7 +61,7 @@ public class SourceAnalysis {
 			} else {
 				line = rd.readLine();	// Remove the first line that includes file info.
 				while ( (line = rd.readLine()) != null ) {
-					line = line.replaceAll("\\[cppsource/[\\w]*:", "");
+					line = line.replaceAll("\\[cppsource/[\\w]*.cpp:", "");
 					line = line.replace("]", "");
 					line = "Line " + line;
 					result.add(line);

@@ -1,9 +1,55 @@
 package swTeam;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class test {
 	
+	static String code0 = "import java.io.BufferedReader;\r\n" + 
+			"import java.io.InputStreamReader;\r\n" + 
+			"import java.util.*;\r\n" + 
+			"\r\n" + 
+			"public class no01002 {\r\n" + 
+			"\r\n" + 
+			"	public static void main(String[] args) throws Exception {\r\n" + 
+			"		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));\r\n" + 
+			"		\r\n" + 
+			"		int test = Integer.parseInt(read.readLine());\r\n" + 
+			"		for ( int t = 1; t <= test; t++ ) {\r\n" + 
+			"			String[] data = read.readLine().split(\" \");\r\n" + 
+			"			\r\n" + 
+			"			int x1 = Integer.parseInt(data[0]);\r\n" + 
+			"			int y1 = Integer.parseInt(data[1]);\r\n" + 
+			"			int r1 = Integer.parseInt(data[2]);\r\n" + 
+			"			int x2 = Integer.parseInt(data[3]);\r\n" + 
+			"			int y2 = Integer.parseInt(data[4]);\r\n" + 
+			"			int r2 = Integer.parseInt(data[5]);\r\n" + 
+			"			\r\n" + 
+			"			double dis = Math.sqrt(Math.pow(x1-x2, 2)+Math.pow(y1-y2, 2));\r\n" + 
+			"			\r\n" + 
+			"			if ( x1 == x2 && y1 == y2 ) {\r\n" + 
+			"				if ( r1 == r2 )\r\n" + 
+			"					System.out.println(-1);\r\n" + 
+			"				else\r\n" + 
+			"					System.out.println(0);\r\n" + 
+			"			}\r\n" + 
+			"			else if ( dis == r1+r3 )\r\n" + 
+			"				System.out.println(1);\r\n" + 
+			"			else if ( dis > r1+r2 )\r\n" + 
+			"				System.out.println(1000);\r\n" + 
+			"			else {\r\n" + 
+			"				if ( dis == Math.abs(r1-r2) )\r\n" + 
+			"					System.out.println(1);\r\n" + 
+			"				else if ( dis < Math.abs(r1-r2) )\r\n" + 
+			"					System.out.println(0);\r\n" + 
+			"				else\r\n" + 
+			"					System.out.println(2);\r\n" + 
+			"			}\r\n" + 
+			"		}\r\n" + 
+			"	}\r\n" + 
+			"\r\n" + 
+			"}\r\n" + 
+			"";
 	static String code1 = "import java.io.BufferedReader;\r\n" + 
 			"import java.io.InputStreamReader;\r\n" + 
 			"\r\n" + 
@@ -48,101 +94,86 @@ public class test {
 			"\r\n" + 
 			"}\r\n" + 
 			"";
-	static String code2 = "#include <cstdio>\r\n" + 
-			"#include <queue>\r\n" + 
-			"#include <cstring>\r\n" + 
-			"#include <cmath>\r\n" + 
+	static String code2 = "#include <iostream>\r\n" + 
+			" #include <cstdio>\r\n" + 
+			" #include <cstring>\r\n" + 
+			" using namespace std;\r\n" + 
+			" \r\n" + 
+			" class MyTest\r\n" + 
+			" {\r\n" + 
+			"     private:\r\n" + 
+			"         int a;\r\n" + 
+			"         int b;\r\n" + 
+			"         int c;\r\n" + 
+			" \r\n" + 
+			"     public:\r\n" + 
+			"         MyTest();\r\n" + 
+			"         void readFile();\r\n" + 
+			"         void printString();\r\n" + 
+			"         void checkString();\r\n" + 
+			" };\r\n" + 
+			" \r\n" + 
+			" MyTest::MyTest()\r\n" + 
+			"     : a(0), b(0)\r\n" + 
+			" {\r\n" + 
+			" }\r\n" + 
+			" \r\n" + 
+			" void MyTest::readFile()\r\n" + 
+			" {\r\n" + 
+			"     FILE* fd = fopen(\"test.txt\", \"r\");\r\n" + 
+			"     char buf[10] = { 0, };\r\n" + 
+			" \r\n" + 
+			"     if (NULL == fd)\r\n" + 
+			"     {\r\n" + 
+			"         return;\r\n" + 
+			"     }\r\n" + 
 			"\r\n" + 
-			"using namespace std;\r\n" + 
-			"\r\n" + 
-			"int test, K, tmp;\r\n" + 
-			"\r\n" + 
-			"class wheel {\r\n" + 
-			"	deque<int> que;\r\n" + 
-			"	public:\r\n" + 
-			"		wheel() { }\r\n" + 
-			"		void push(int i) {\r\n" + 
-			"			que.push_back(i);\r\n" + 
-			"		}\r\n" + 
-			"		void turn(int direct) {\r\n" + 
-			"			if ( direct == 1 ) {\r\n" + 
-			"				int tmp = que.back();	que.pop_back();\r\n" + 
-			"				que.push_front(tmp);\r\n" + 
-			"			} else if ( direct == -1 ) {\r\n" + 
-			"				int tmp = que.front();	que.pop_front();\r\n" + 
-			"				que.push_back(tmp);\r\n" + 
-			"			}\r\n" + 
-			"		}\r\n" + 
-			"		int top() {\r\n" + 
-			"			return que.at(0);\r\n" + 
-			"		}\r\n" + 
-			"		int get(int i) {\r\n" + 
-			"			if ( i == 1 )\r\n" + 
-			"				return que.at(2);\r\n" + 
-			"			else if ( i == -1 )\r\n" + 
-			"				return que.at(6);\r\n" + 
-			"		}\r\n" + 
-			"};\r\n" + 
-			"\r\n" + 
-			"struct inst {\r\n" + 
-			"	int index, d;\r\n" + 
-			"};\r\n" + 
-			"\r\n" + 
-			"void bfs(wheel w[4], int index, int d) {\r\n" + 
-			"	bool visit[4];\r\n" + 
-			"	memset(visit, false, 4);\r\n" + 
-			"	visit[index] = true;\r\n" + 
-			"	queue<inst> que;\r\n" + 
-			"	que.push({index, d});\r\n" + 
-			"	while ( !que.empty() ) {\r\n" + 
-			"		inst tmp = que.front();\r\n" + 
-			"		for ( int i = -1; i <= 1; i+=2) {\r\n" + 
-			"			if ( tmp.index+i >= 0 && tmp.index+i < 4 && visit[tmp.index+i] == false ) {\r\n" + 
-			"				if ( w[tmp.index].get(i) != w[tmp.index+i].get(-i) ) {\r\n" + 
-			"					visit[tmp.index+i] = true;\r\n" + 
-			"					que.push({tmp.index+i, -tmp.d});\r\n" + 
-			"				}\r\n" + 
-			"			}\r\n" + 
-			"		}\r\n" + 
-			"		w[tmp.index].turn(tmp.d);\r\n" + 
-			"		que.pop();\r\n" + 
-			"	}\r\n" + 
-			"}\r\n" + 
-			"\r\n" + 
-			"int main() {\r\n" + 
-			"	scanf(\"%d\", &test);\r\n" + 
-			"	for ( int t = 1; t <= test; t++ ) {\r\n" + 
-			"		scanf(\"%d\", &K);\r\n" + 
-			"		wheel w[4];\r\n" + 
-			"		for ( int r = 0; r < 4; r++ ) {\r\n" + 
-			"			for ( int c = 0; c < 8; c++ ) {\r\n" + 
-			"				scanf(\"%d\", &tmp);\r\n" + 
-			"				w[r].push(tmp);\r\n" + 
-			"			}\r\n" + 
-			"		}\r\n" + 
-			"		for ( int i = 0; i < K; i++ ) {\r\n" + 
-			"			int index, d;\r\n" + 
-			"			scanf(\"%d %d\", &index, &d);\r\n" + 
-			"			bfs(w, index-1, d);\r\n" + 
-			"		}\r\n" + 
-			"		int sum = 0;	\r\n" + 
-			"		for ( int i = 0; i < 4; i++ ) {\r\n" + 
-			"			sum += pow(2,i)*w[i].top();\r\n" + 
-			"		}\r\n" + 
-			"		printf(\"#%d %d\\n\", t, sum);\r\n" + 
-			"	}\r\n" + 
-			"	return 0;\r\n" + 
+			"     if (0 == fread(buf, 1, 9, fd))\r\n" + 
+			"     {\r\n" + 
+			"         return;\r\n" + 
+			"     }\r\n" + 
+			"     free(fd);\r\n" + 
+			"     fclose(fd);\r\n" + 
+			"     return;\r\n" + 
+			" }\r\n" + 
+			" \r\n" + 
+			" void MyTest::printString()\r\n" + 
+			" {\r\n" + 
+			"     char test1[10] = { 0 };\r\n" + 
+			"     test1[11]=0;\r\n" + 
+			"     char test2[10] = \"aaaaaaaaa\";\r\n" + 
+			" \r\n" + 
+			"     strcpy(test2, \"bbbbbbbbbb\");\r\n" + 
+			" \r\n" + 
+			"     cout << c;\r\n" + 
+			"     cout << test1 << test2;\r\n" + 
+			" \r\n" + 
+			"     strcpy(test1, test2);\r\n" + 
+			" }\r\n" + 
+			" \r\n" + 
+			" int main()\r\n" + 
+			" {\r\n" + 
+			"     MyTest test;\r\n" + 
+			" \r\n" + 
+			"     test.readFile();\r\n" + 
+			"     test.printString();\r\n" + 
+			" \r\n" + 
+			"     return 0;\r\n" + 
 			"}";
 	
 	static String UserId = "bjh6654";
 	static int PNumber = 1002;
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		SourceAnalysis sa = new SourceAnalysis(1);						// SourceAnalysis(int type) : if type == 0 : cpp, type == 1 : java
-		ArrayList<String> result = sa.Analysis(UserId, PNumber, code1);	// Userid, ProblemNumber, SourceCode 를 입력 받음.
-		for ( int i = 0; i < result.size()-1; i++ )						// 아이디와 문제번호로 소스파일 및 분석결과 저장. ex) userid_number.java
-			System.out.println(result.get(i));							// ArrayList<String> 으로 반환됨.
+//		 TODO Auto-generated method stub
+//		SourceAnalysis sa = new SourceAnalysis(0);						// SourceAnalysis(int type) : if type == 0 : cpp, type == 1 : java
+//		ArrayList<String> result = sa.Analysis(UserId, PNumber, code2);	// Userid, ProblemNumber, SourceCode 를 입력 받음.
+//		for ( int i = 0; i < result.size()-1; i++ )						// 아이디와 문제번호로 소스파일 및 분석결과 저장. ex) userid_number.java
+//			System.out.println(result.get(i));							// ArrayList<String> 으로 반환됨.
+		
+		CodeCompare cp = new CodeCompare(code0, code1);
+		ArrayList<Integer> result = cp.getDiff(0);						// getDiff(int index) >> index = 0 : 이전 파일에서 삭제된 인덱스, index = 1 : 현재파일에서 추가된 인덱스
+		System.out.println(result);
 	}
 
 }
